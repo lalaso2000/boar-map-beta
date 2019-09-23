@@ -38,10 +38,12 @@
                 <div class="col-md">
                     <form>
                         <div class="form-group">
-                            <label>ユーザーID</label>
-                            <input type="text" class="form-control mb-4" id="user-id" required>
-                            <label>パスワード</label>
-                            <input type="password" class="form-control mb-4" id="password" required>
+                            <label>ユーザーID <span class="badge badge-danger">必須</span> </label>
+                            <input type="text" class="form-control mb-4" id="user-id" required aria-required="true">
+                            <label>パスワード <span class="badge badge-danger">必須</span> </label>
+                            <input type="password" class="form-control mb-4" id="password" required
+                                aria-required="true">
+                            <div id="error-space"></div>
                         </div>
                     </form>
                 </div>
@@ -67,6 +69,7 @@
         integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
         crossorigin="anonymous"></script>
 
+
     <script>
         $(function () {
             console.log("jQuery ready!");
@@ -83,20 +86,38 @@
                     "userID": user_id,
                     "password": password,
                     "tenantID": "210005"
-                }
+                };
 
                 console.log(data);
                 // まだポストできないので保留．
-                // $.post("https://pascali.info-mapping.com/webservices/publicservice/JsonService.asmx/GetToken", data)
-                //     .done(function (result) {
-                //         console.log(result);
-                //     })
-                //     .fail(function (xhr, status, error) {
-                //         console.log(xhr);
-                //         console.log(status);
-                //         console.log(error);
-                //     })
+                fetch('https://pascali.info-mapping.com/webservices/publicservice/JsonService.asmx/GetToken',
+                    {
+                        method: "POST",
+                        headers: {
+                            "Accept": "application/json",
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify(data)
+                    })
+                    .then(res => res.json().then(data => login(data)))
+                    .catch(error => console.log("Error:", error));
             });
+
+            // ログイン処理
+            function login(res_data) {
+                console.log(res_data);
+                // ログイン失敗のとき
+                if (res_data.commonHeader.resultInfomation != 0) {
+                    console.log("ログイン失敗．", res_data.commonHeader.systemErrorReport);
+                    // エラーを画面に表示する
+                    $("#error-space").empty();
+                    $('#error-space').append(res_data.commonHeader.systemErrorReport);
+                    return;
+                }
+                // ログイン処理
+                var access_token = res_data.data.accessToken;
+                console.log("ログイン成功:", access_token);
+            }
         });
     </script>
 </body>
