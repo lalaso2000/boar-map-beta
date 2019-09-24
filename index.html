@@ -12,7 +12,7 @@
         integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
     <link rel="stylesheet" href="./css/main.css">
 
-    <title>いのししマップぎふ - TOP</title>
+    <title>いのししマップぎふ - ログイン</title>
 </head>
 
 <body>
@@ -117,6 +117,11 @@
                 // ログイン処理
                 var access_token = res_data.data.accessToken;
                 console.log("ログイン成功:", access_token);
+                $("#error-space").empty();
+                // アクセストークンをブラウザに保存する
+                localStorage.setItem("access_token", access_token);
+                // マップへリダイレクト
+                window.location.href = "./map.html";
             }
         });
     </script>
