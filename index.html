@@ -128,7 +128,6 @@
                         body: JSON.stringify(data)
                     })
                     .then(function (res) {
-                        console.log(res.headers.get('X-Powered-By'));
                         var time = new Date().getTime();
                         var json = res.json().then(data => login(data, time));
                     })
