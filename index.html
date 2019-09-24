@@ -125,7 +125,8 @@
                 var access_token = res_data.data.accessToken;
                 console.log("ログイン成功:", access_token);
                 $("#error-space").empty();
-                // アクセストークンをブラウザに保存する
+                // ユーザー名とアクセストークンをブラウザに保存する
+                localStorage.setItem("user_id", res_data.data.userId);
                 localStorage.setItem("access_token", access_token);
                 // マップへリダイレクト
                 window.location.href = "./map.html";
