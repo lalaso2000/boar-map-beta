@@ -22,7 +22,7 @@
 <body>
     <!-- ナビゲーションバー -->
     <nav class="navbar navbar-expand-sm navbar-dark mb-3 sticky-top">
-        <a class="navbar-brand" href="./index.html">いのししマップぎふ</a>
+        <a class="navbar-brand" href="./map.html">いのししマップぎふ</a>
         <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navi" aria-controls="bs-navi"
             aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -96,6 +96,7 @@
                 .then(res => res.json().then(data => console.log(data)))
                 .catch(error => console.log("Error:", error));
             localStorage.removeItem("access_token");
+            localStorage.removeItem("login_time");
             window.location.href = "./index.html";
         }
     </script>

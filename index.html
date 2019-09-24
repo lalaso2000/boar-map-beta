@@ -80,6 +80,27 @@
     <script>
         $(function () {
             console.log("jQuery ready!");
+
+            // トークンを確認して，ログイン状態ならマップへ飛ばす
+            const last_login = localStorage.getItem("login_time");
+            const now = new Date().getTime();
+            const elapsed = now - last_login;
+            const token = localStorage.getItem("access_token");
+            if (last_login != null && token != null) {
+                if (now - last_login <= 6 * 60 * 60 * 1000) {
+                    // 前回ログインから6時間以内ならログインスキップ
+                    console.log("access token", token);
+                    console.log("経過時間", elapsed / 1000);
+                    window.location.href = "./map.html";
+                }
+                else {
+                    // 六時間以上たった
+                    localStorage.removeItem("login_time");
+                    localStorage.removeItem("access_token");
+                }
+            }
+
+            // ログインボタンを押したときの処理
             $("#login-button").on("click", function () {
                 const user_id = $("#user-id").val();
                 const password = $("#password").val();
@@ -106,12 +127,16 @@
                         },
                         body: JSON.stringify(data)
                     })
-                    .then(res => res.json().then(data => login(data)))
+                    .then(function (res) {
+                        console.log(res.headers.get('X-Powered-By'));
+                        var time = new Date().getTime();
+                        var json = res.json().then(data => login(data, time));
+                    })
                     .catch(error => console.log("Error:", error));
             });
 
             // ログイン処理
-            function login(res_data) {
+            function login(res_data, time) {
                 console.log(res_data);
                 // ログイン失敗のとき
                 if (res_data.commonHeader.resultInfomation != 0) {
@@ -128,6 +153,7 @@
                 // ユーザー名とアクセストークンをブラウザに保存する
                 localStorage.setItem("user_id", res_data.data.userId);
                 localStorage.setItem("access_token", access_token);
+                localStorage.setItem("login_time", time);
                 // マップへリダイレクト
                 window.location.href = "./map.html";
             }
