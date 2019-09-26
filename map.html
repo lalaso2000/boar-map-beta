@@ -15,33 +15,44 @@
     <!-- アイコン -->
     <script src="https://kit.fontawesome.com/767a5d66ca.js" crossorigin="anonymous"></script>
 
+    <!-- Google Maps -->
+    <script src="http://maps.google.com/maps/api/js?key=AIzaSyDc-XqIl8L2uVHPVuckvnGUkqTeZ_Re9oU&language=ja"></script>
+
     <title>いのししマップぎふ</title>
 </head>
 
 
 <body>
-    <!-- ナビゲーションバー -->
-    <nav class="navbar navbar-expand-sm navbar-dark mb-3 sticky-top">
-        <a class="navbar-brand" href="./map.html">いのししマップぎふ</a>
-        <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navi" aria-controls="bs-navi"
-            aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse justify-content-end" id="navi">
-            <ul class="navbar-nav">
-                <li class="nav-item active">
-                    <a class="nav-link" href="javascript:void(0);" onclick="logout();"><i
-                            class="fas fa-sign-out-alt"></i>ログアウト</a>
-                </li>
-            </ul>
-        </div>
-    </nav>
+    <div class="container-fluid">
+        <!-- ナビゲーションバー -->
+        <nav class="navbar navbar-expand-sm navbar-dark mb-3">
+            <a class="navbar-brand" href="./map.html">いのししマップぎふ</a>
+            <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navi"
+                aria-controls="bs-navi" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse justify-content-end" id="navi">
+                <ul class="navbar-nav">
+                    <li class="nav-item active">
+                        <a class="nav-link" href="javascript:void(0);" onclick="logout();"><i
+                                class="fas fa-sign-out-alt"></i>ログアウト</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
 
-    <main>
-        <h1>マップページ</h1>
-        <p>こんにちは、<span id="user-id"></span>様。</p>
-        <p>あなたのアクセストークンは「<span id="access-token"></span>」です。</p>
-    </main>
+        <main>
+            <div class="row">
+                <div id="description" class="col-12">
+                    <p>こんにちは、<span id="user-id"></span>様。</p>
+                </div>
+
+                <div id="map" class="col-12">
+                    Map Error.
+                </div>
+            </div>
+        </main>
+    </div>
 
     <!-- Bootstrapのjs -->
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"
@@ -99,6 +110,41 @@
             localStorage.removeItem("login_time");
             window.location.href = "./index.html";
         }
+    </script>
+
+    <script>
+        // マップ高さ処理
+        $(function () {
+            // ナビバーや説明の部分の高さとウィンドウの高さを取得してマップの高さを決める
+            function set_map_h() {
+                const nav_h = $(".navbar").outerHeight(true);
+                const description_h = $("#description").outerHeight(true);
+                const window_h = $(window).height();
+                console.log("nav", nav_h);
+                console.log("des", description_h);
+                console.log("win", window_h);
+                $("#map").height(window_h - nav_h - description_h);
+            }
+            // 最初の読み込み時に
+            $(window).on('load', function () {
+                set_map_h();
+            });
+            // ウィンドウが変化した時に
+            $(window).resize(function () {
+                set_map_h();
+            })
+        });
+    </script>
+
+    <script>
+        // マップ処理
+        var my_location = new google.maps.LatLng(35.6811673, 139.7670516);
+        var options = {
+            zoom: 15,
+            center: my_location,
+            mapTypeId: "roadmap",
+        };
+        var map = new google.maps.Map(document.getElementById('map'), options);
     </script>
 </body>
 
