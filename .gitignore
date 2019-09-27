@@ -9,4 +9,5 @@
 api_key.txt
 test.html
 
-server.*
+server.crt
+server.key
