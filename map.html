@@ -16,7 +16,7 @@
     <script src="https://kit.fontawesome.com/767a5d66ca.js" crossorigin="anonymous"></script>
 
     <!-- Google Maps -->
-    <script src="http://maps.google.com/maps/api/js?key=AIzaSyDc-XqIl8L2uVHPVuckvnGUkqTeZ_Re9oU&language=ja"></script>
+    <script src="https://maps.google.com/maps/api/js?key=AIzaSyDc-XqIl8L2uVHPVuckvnGUkqTeZ_Re9oU&language=ja"></script>
     <script src="https://cdn.klokantech.com/maptilerlayer/v1/index.js"></script>
 
     <title>いのししマップぎふ</title>
@@ -166,29 +166,6 @@
                             radius = position.accuracy,
                             latLng = new google.maps.LatLng(position.latitude, position.longitude);
 
-                        // //現在地に大きい円と小さい円を描く
-                        // bigCircle = {
-                        //     center: latLng,
-                        //     radius: radius,
-                        //     map: map,
-                        //     strokeColor: '#44BBFF',
-                        //     strokeOpacity: 0.2,
-                        //     strokeWeight: 1,
-                        //     fillColor: '#44BBFF',
-                        //     fillOpacity: 0.2
-                        // },
-                        // smallCircle = {
-                        //     center: latLng,
-                        //     radius: 15,
-                        //     map: map,
-                        //     strokeColor: '#FFFFFF',
-                        //     strokeOpacity: 8,
-                        //     strokeWeight: 3,
-                        //     fillColor: '#44BBFF',
-                        //     fillOpacity: 0.8
-                        // },
-                        // circle1 = new google.maps.Circle(bigCircle),
-                        // circle2 = new google.maps.Circle(smallCircle);
                         // 現在地にカスタムピンを立てる
                         var markerOptions = {
                             map: map,
