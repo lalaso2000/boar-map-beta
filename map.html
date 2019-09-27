@@ -17,6 +17,7 @@
 
     <!-- Google Maps -->
     <script src="http://maps.google.com/maps/api/js?key=AIzaSyDc-XqIl8L2uVHPVuckvnGUkqTeZ_Re9oU&language=ja"></script>
+    <script src="https://cdn.klokantech.com/maptilerlayer/v1/index.js"></script>
 
     <title>いのししマップぎふ</title>
 </head>
@@ -137,14 +138,62 @@
     </script>
 
     <script>
+        // 現在地ボタンを作る
+        function GetLocBtn(btnDiv, map) {
+
+            // Set CSS for the btn border.
+            var btnUI = document.createElement('div');
+            btnUI.style.backgroundColor = '#fff';
+            btnUI.style.border = '2px solid #fff';
+            btnUI.style.borderRadius = '50%';
+            btnUI.style.boxShadow = '0 2px 6px rgba(0,0,0,.3)';
+            btnUI.style.cursor = 'pointer';
+            btnUI.style.height = '48px';
+            btnUI.style.width = '48px';
+            btnUI.style.padding = '0px 0px 0px 0px';
+            btnUI.style.margin = '6px 6px 6px 6px';
+            btnUI.style.textAlign = 'center';
+            btnUI.title = 'Click to recenter the map';
+            btnDiv.appendChild(btnUI);
+
+            // Set CSS for the btn interior.
+            var btnText = document.createElement('div');
+            btnText.style.lineHeight = '38px';
+            btnText.style.marginBottom = '3px';
+            btnText.style.marginTop = '3px';
+            btnText.style.padding = '0px 0px 0px 0px';
+            btnText.innerHTML = '<img src="./images/my_location-24px.svg" width="24"/>';
+            btnUI.appendChild(btnText);
+
+            // Setup the click event listeners: simply set the map to Chicago.
+            btnUI.addEventListener('click', function () {
+                console.log("clicked.");
+            });
+
+        }
+
         // マップ処理
-        var my_location = new google.maps.LatLng(35.6811673, 139.7670516);
+        var my_location = new google.maps.LatLng(35.409528, 136.756466);
         var options = {
             zoom: 15,
             center: my_location,
+            mapTypeControl: true,
+            mapTypeControlOptions: {
+                style: google.maps.MapTypeControlStyle.DROPDOWN_MENU,
+                mapTypeIds: ['roadmap', 'terrain']
+            },
+            streetViewControl: false,
+            fullscreenControl: false,
             mapTypeId: "roadmap",
         };
         var map = new google.maps.Map(document.getElementById('map'), options);
+
+        // 現在地ボタンを追加
+        var getLocBtnDiv = document.createElement('div');
+        var getLocBtn = new GetLocBtn(getLocBtnDiv, map);
+
+        getLocBtnDiv.index = 1;
+        map.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push(getLocBtnDiv);
     </script>
 </body>
 
