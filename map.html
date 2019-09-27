@@ -65,25 +65,6 @@
         integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
         crossorigin="anonymous"></script>
 
-    <!-- ログインできているかチェック -->
-    <script>
-        const token = localStorage.getItem('access_token');
-        console.log("access token: ", token);
-        const user_id = localStorage.getItem('user_id');
-        if (!token) {
-            // アクセストークンがない
-            // ログイン画面へリダイレクト
-            window.location.href = "./index.html";
-        }
-
-        // ページに反映
-        $(function () {
-            console.log("jQuery Ready!");
-            $("#access-token").append(token);
-            $("#user-id").append(user_id);
-        });
-    </script>
-
     <script>
         // ログアウト処理
         function logout() {
@@ -138,6 +119,9 @@
     </script>
 
     <script>
+        // 地図インスタンス
+        var map;
+
         // 現在地ボタンを作る
         function GetLocBtn(btnDiv, map) {
 
@@ -167,33 +151,122 @@
 
             // Setup the click event listeners: simply set the map to Chicago.
             btnUI.addEventListener('click', function () {
-                console.log("clicked.");
+                getLocation();
             });
+        }
 
+        // 現在地取得作業
+        function getLocation() {
+            if (navigator.geolocation) {
+                window.navigator.geolocation.getCurrentPosition(
+                    function (result) {
+                        console.log("get loc success!");
+                        //現在地の取得成功
+                        var position = result.coords,
+                            radius = position.accuracy,
+                            latLng = new google.maps.LatLng(position.latitude, position.longitude);
+
+                        // //現在地に大きい円と小さい円を描く
+                        // bigCircle = {
+                        //     center: latLng,
+                        //     radius: radius,
+                        //     map: map,
+                        //     strokeColor: '#44BBFF',
+                        //     strokeOpacity: 0.2,
+                        //     strokeWeight: 1,
+                        //     fillColor: '#44BBFF',
+                        //     fillOpacity: 0.2
+                        // },
+                        // smallCircle = {
+                        //     center: latLng,
+                        //     radius: 15,
+                        //     map: map,
+                        //     strokeColor: '#FFFFFF',
+                        //     strokeOpacity: 8,
+                        //     strokeWeight: 3,
+                        //     fillColor: '#44BBFF',
+                        //     fillOpacity: 0.8
+                        // },
+                        // circle1 = new google.maps.Circle(bigCircle),
+                        // circle2 = new google.maps.Circle(smallCircle);
+                        // 現在地にカスタムピンを立てる
+                        var markerOptions = {
+                            map: map,
+                            position: latLng,
+                            icon: {
+                                url: '/images/myLoc.png',
+                                scaledSize: new google.maps.Size(40, 40),
+                                origin: new google.maps.Point(0, 0),
+                                anchor: new google.maps.Point(21, 21)
+                            }
+                        };
+                        var marker = new google.maps.Marker(markerOptions);
+
+                        //現在地へマップをズームして移動
+                        map.setZoom(16);
+                        map.setCenter(latLng);
+                    },
+                    function (error) {
+                        //取得失敗
+                        var msg;
+                        switch (error.code) {
+                            case 1: msg = "位置情報の利用が許可されていません"; break;
+                            case 2: msg = "位置が判定できません"; break;
+                            case 3: msg = "タイムアウトしました"; break;
+                        }
+                        alert(msg);
+                    },
+                    { enableHighAccuracy: true });
+            } else {
+                alert("本ブラウザではGeolocationが使えません");
+            }
         }
 
         // マップ処理
-        var my_location = new google.maps.LatLng(35.409528, 136.756466);
-        var options = {
-            zoom: 15,
-            center: my_location,
-            mapTypeControl: true,
-            mapTypeControlOptions: {
-                style: google.maps.MapTypeControlStyle.DROPDOWN_MENU,
-                mapTypeIds: ['roadmap', 'terrain']
-            },
-            streetViewControl: false,
-            fullscreenControl: false,
-            mapTypeId: "roadmap",
-        };
-        var map = new google.maps.Map(document.getElementById('map'), options);
+        function initMap() {
+            var my_location = new google.maps.LatLng(35.409528, 136.756466);
+            var options = {
+                zoom: 15,
+                center: my_location,
+                mapTypeControl: true,
+                mapTypeControlOptions: {
+                    style: google.maps.MapTypeControlStyle.DROPDOWN_MENU,
+                    mapTypeIds: ['roadmap', 'terrain']
+                },
+                streetViewControl: false,
+                fullscreenControl: false,
+                mapTypeId: "roadmap",
+            };
+            map = new google.maps.Map(document.getElementById('map'), options);
 
-        // 現在地ボタンを追加
-        var getLocBtnDiv = document.createElement('div');
-        var getLocBtn = new GetLocBtn(getLocBtnDiv, map);
+            // 現在地ボタンを追加
+            var getLocBtnDiv = document.createElement('div');
+            var getLocBtn = new GetLocBtn(getLocBtnDiv, map);
 
-        getLocBtnDiv.index = 1;
-        map.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push(getLocBtnDiv);
+            getLocBtnDiv.index = 1;
+            map.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push(getLocBtnDiv);
+        }
+    </script>
+
+    <!-- 読み込み時に実施 -->
+    <script>
+        const token = localStorage.getItem('access_token');
+        console.log("access token: ", token);
+        const user_id = localStorage.getItem('user_id');
+        if (!token) {
+            // アクセストークンがない
+            // ログイン画面へリダイレクト
+            window.location.href = "./index.html";
+        }
+
+        // ページに反映
+        $(function () {
+            console.log("jQuery Ready!");
+            $("#access-token").append(token);
+            $("#user-id").append(user_id);
+        });
+
+        initMap();
     </script>
 </body>
 
