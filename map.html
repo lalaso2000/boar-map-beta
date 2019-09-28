@@ -222,6 +222,14 @@
 
             getLocBtnDiv.index = 1;
             map.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push(getLocBtnDiv);
+
+            google.maps.event.addListener(map, 'click', onMapClick);
+        }
+
+        // マップクリック時に発生
+        function onMapClick(event) {
+            const latLng = event.latLng.toString().replace("(", "").replace(")", "").split(", ");
+            window.location.href = "./add.html?latitude=" + latLng[0] + "&longitude=" + latLng[1];
         }
     </script>
 
