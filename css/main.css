@@ -26,6 +26,19 @@ main {
     color: red;
 }
 
+#map-area {
+    width: 100%;
+    max-width: 360px;
+    height: 0;
+    padding-bottom: 100%;
+    overflow: hidden;
+    margin: 0 auto;
+}
+
+#map-add {
+    height: 380px;
+}
+
 #map {
     width: 100%;
 }
