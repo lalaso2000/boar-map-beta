@@ -1,4 +1,5 @@
 var map;
+var loc_pin;
 
 var getUrlVars = function(){
     var vars = {}; 
@@ -49,6 +50,10 @@ function getLocation() {
         window.navigator.geolocation.getCurrentPosition(
             function (result) {
                 console.log("get loc success!");
+                if(loc_pin != null) {
+                    // 既存のピンを削除
+                    loc_pin.setMap(null);
+                }
                 //現在地の取得成功
                 var position = result.coords,
                     radius = position.accuracy,
@@ -65,7 +70,7 @@ function getLocation() {
                         anchor: new google.maps.Point(21, 21)
                     }
                 };
-                var marker = new google.maps.Marker(markerOptions);
+                loc_pin = new google.maps.Marker(markerOptions);
 
                 //現在地へマップをズームして移動
                 map.setZoom(16);
