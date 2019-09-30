@@ -108,7 +108,7 @@
             $("#user-id").append(user_id);
         });
 
-        initMap(true, null);
+        var map = initMap(true, null);
     </script>
 
     <script>
@@ -124,7 +124,7 @@
             "layerId": 10000097,
             "inclusion": 1,
             "buffer": 100,
-            "srid": 2449,
+            "srid": 4326,
             "type": "Feature",
             "geometry": {
                 "type": "Polygon",
@@ -152,9 +152,22 @@
             })
             .then(function (res) {
                 var json = res.json().then(data => {
-                    console.log(data);
+                    if(data["data"]["features"] != null) {
+                        for(var i = 0; i < data["data"]["features"].length; i++) {
+                            const point = data["data"]["features"][i];
+
+                            var latLng = new google.maps.LatLng(point["geometry"]["coordinates"][1], point["geometry"]["coordinates"][0]);
+
+                            var markerOptions = {
+                                map: map,
+                                position: latLng,
+                                title: point["properties"]["ID$"]
+                            };
+                            var marker = new google.maps.Marker(markerOptions);
+                            console.log(point);
+                        }
+                    }
                     alert("取得が完了しました");
-                    //location.href = "./map.html"
                 });
             })
             .catch(error => console.log("Error:", error));

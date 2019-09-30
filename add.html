@@ -93,15 +93,15 @@
                         "receiptNumber": receiptNumber
                     },
                     "layerId": 10000097,
-                    "srid": 2449,
+                    "srid": 4326,
                     "features": [
                         {
                             "type": "Feature",
                             "geometry": {
                                 "type": "Point",
                                 "coordinates": [
-                                    parseInt(params["longitude"], 10),
-                                    parseInt(params["latitude"], 10)
+                                    parseFloat(params["longitude"]),
+                                    parseFloat(params["latitude"])
                                 ]
                             },
                             "properties": {
@@ -110,6 +110,8 @@
                         }
                     ]
                 };
+
+                console.log(data);
 
                 fetch('https://pascali.info-mapping.com/webservices/publicservice/JsonService.asmx/AddFeatures',
                     {
