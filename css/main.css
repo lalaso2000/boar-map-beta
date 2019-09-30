@@ -26,6 +26,10 @@ main {
     color: red;
 }
 
+.login {
+    margin: 0 auto;
+}
+
 #map-area {
     width: 100%;
     max-width: 360px;
@@ -35,7 +39,7 @@ main {
     margin: 0 auto;
 }
 
-#map-add {
+.map-add {
     height: 380px;
 }
 
