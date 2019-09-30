@@ -108,7 +108,56 @@
             $("#user-id").append(user_id);
         });
 
-        initMap(false, null);
+        initMap(true, null);
+    </script>
+
+    <script>
+        //const token = localStorage.getItem('access_token');
+        //const token = "2e8f941d-442e-457c-8b7e-c9c4e6334a38"
+
+        // アクセストークンを取得
+        var receiptNumber = Math.floor(Math.random() * 100000);
+        var data = {
+            "commonHeader": {
+                "receiptNumber": receiptNumber
+            },
+            "layerId": 10000097,
+            "inclusion": 1,
+            "buffer": 100,
+            "srid": 2449,
+            "type": "Feature",
+            "geometry": {
+                "type": "Polygon",
+                "coordinates": [
+                    [ 
+                        [136.257826, 35.557228],
+                        [137.144564, 35.716552],
+                        [137.117792, 35.190084],
+                        [136.360881, 35.072085],
+                        [136.257826, 35.557228]
+                    ]
+                ]
+            }
+        };
+
+        fetch('https://pascali.info-mapping.com/webservices/publicservice/JsonService.asmx/GetFeaturesByExtent',
+            {
+                method: "POST",
+                headers: {
+                    "Accept": "application/json",
+                    "Content-Type": "application/json",
+                    "X-Map-Api-Access-Token": token
+                },
+                body: JSON.stringify(data)
+            })
+            .then(function (res) {
+                var json = res.json().then(data => {
+                    console.log(data);
+                    alert("取得が完了しました");
+                    //location.href = "./map.html"
+                });
+            })
+            .catch(error => console.log("Error:", error));
     </script>
 </body>
 
