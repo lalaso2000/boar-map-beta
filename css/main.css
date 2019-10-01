@@ -30,19 +30,43 @@ main {
     margin: 0 auto;
 }
 
+#info-detail {
+    margin: 0 auto;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.point-form {
+    min-width: 210px;
+    max-width: 400px;
+    width: 100%;
+    padding: 20px;
+}
+
+.point-form h1 {
+    text-align: center;
+    font-size: 25px;
+}
+
 #map-area {
     width: 100%;
-    max-width: 360px;
-    height: 0;
-    padding-bottom: 100%;
+    max-width: 400px;
+    
     overflow: hidden;
-    margin: 0 auto;
 }
 
 .map-add {
-    height: 380px;
+    height: 0;
+    padding-bottom: 100%;
 }
 
 #map {
     width: 100%;
+}
+
+#detail {
+    width: 100%;
+    height: 165px;
 }

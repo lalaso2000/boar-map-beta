@@ -46,3 +46,4 @@ function login(res_data, time) {
     // マップへリダイレクト
     window.location.href = "./map.html";
 }
+

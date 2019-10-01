@@ -55,35 +55,34 @@
                         <p>こんにちは、<span id="user-id"></span>様。</p>
                     </div>
         
-                    <div id="map-area">
-                        <div id="map" class="map-add">
-                            Map Error.
+                    <div id="info-detail" class="col-12">
+                        <div id="map-area">
+                            <div id="map" class="map-add">
+                                Map Error.
+                            </div>
                         </div>
-                    </div>
-
-                    <div class="point-form">
-                        <form name="detform" onsubmit="return false;">
-                            <h1>詳細情報</h1>
-                            <textarea name="detail"></textarea>
-                            <button type="button" onclick="registerInfo()">登録</button>
-                        </form>
+    
+                        <div class="point-form">
+                            <form name="detform" onsubmit="return false;">
+                                <h1>緯度: <span id="latitude"></span></h1>
+                                <hr>
+                                <h1>経度: <span id="longitude"></span></h1>
+                                <hr>
+                                <h1>詳細情報</h1>
+                                <textarea name="detail" id="detail"></textarea>
+                                <button type="button" class="btn btn-primary btn-block" onclick="registerInfo()" id="reg_btn">登録</button>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </main>
         </div>
-        
-        
-
-        <script>
-
-        </script>
 
         <script>
             function registerInfo() {
                 const detail = document.detform.detail.value;
 
-                //const token = localStorage.getItem('access_token');
-                const token = "2e8f941d-442e-457c-8b7e-c9c4e6334a38"
+                const token = localStorage.getItem('access_token');
 
                 // アクセストークンを取得
                 var receiptNumber = Math.floor(Math.random() * 100000);
@@ -125,9 +124,8 @@
                     })
                     .then(function (res) {
                         var json = res.json().then(data => {
-                            console.log(data);
                             alert("登録が完了しました");
-                            //location.href = "./map.html"
+                            location.href = "./map.html"
                         });
                     })
                     .catch(error => console.log("Error:", error));
@@ -140,22 +138,19 @@
 
         <script>
             const token = localStorage.getItem('access_token');
-            console.log("access token: ", token);
             const user_id = localStorage.getItem('user_id');
             if (!token) {
-                // アクセストークンがない
-                // ログイン画面へリダイレクト
                 window.location.href = "./index.html";
             }
-                
-            // ページに反映
+            var params = getUrlVars();
+
             $(function () {
-                console.log("jQuery Ready!");
                 $("#access-token").append(token);
                 $("#user-id").append(user_id);
+                $("#latitude").append(params["latitude"]);
+                $("#longitude").append(params["longitude"]);
             });
-                
-            var params = getUrlVars();
+                        
             var latLng = new google.maps.LatLng(params["latitude"], params["longitude"]); // center
 
             var map = initMap(false, latLng);

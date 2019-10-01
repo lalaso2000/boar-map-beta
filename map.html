@@ -36,8 +36,8 @@
         <!-- ナビゲーションバー -->
         <nav class="navbar navbar-expand-sm navbar-dark mb-3">
             <a class="navbar-brand" href="./map.html">いのししマップぎふ</a>
-            <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navi"
-                aria-controls="bs-navi" aria-expanded="false" aria-label="Toggle navigation">
+            <button type="button" class="navbar-toggler" id="nav_btn" data-toggle="collapse" data-target="#navi"
+                aria-controls="bs-navi" aria-expanded="false" aria-label="Toggle navigation" onclick="nav_toggle();">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse justify-content-end" id="navi">
@@ -64,18 +64,23 @@
     </div>
 
     <script>
+        
+        // ナビバーや説明の部分の高さとウィンドウの高さを取得してマップの高さを決める
+        function set_map_h() {
+            const nav_h = $(".navbar").outerHeight(true);
+            const description_h = $("#description").outerHeight(true);
+            const window_h = $(window).height();
+            $("#map").height(window_h - nav_h - description_h);
+        }
+
+        function nav_toggle() {
+            setTimeout(function(){
+                set_map_h();
+            }, 350);
+        }
+
         // マップ高さ処理
         $(function () {
-            // ナビバーや説明の部分の高さとウィンドウの高さを取得してマップの高さを決める
-            function set_map_h() {
-                const nav_h = $(".navbar").outerHeight(true);
-                const description_h = $("#description").outerHeight(true);
-                const window_h = $(window).height();
-                console.log("nav", nav_h);
-                console.log("des", description_h);
-                console.log("win", window_h);
-                $("#map").height(window_h - nav_h - description_h);
-            }
             // 最初の読み込み時に
             $(window).on('load', function () {
                 set_map_h();
@@ -93,7 +98,6 @@
 
     <script>
         const token = localStorage.getItem('access_token');
-        console.log("access token: ", token);
         const user_id = localStorage.getItem('user_id');
         if (!token) {
             // アクセストークンがない
@@ -103,7 +107,6 @@
 
         // ページに反映
         $(function () {
-            console.log("jQuery Ready!");
             $("#access-token").append(token);
             $("#user-id").append(user_id);
         });
@@ -112,10 +115,6 @@
     </script>
 
     <script>
-        //const token = localStorage.getItem('access_token');
-        //const token = "2e8f941d-442e-457c-8b7e-c9c4e6334a38"
-
-        // アクセストークンを取得
         var receiptNumber = Math.floor(Math.random() * 100000);
         var data = {
             "commonHeader": {
@@ -161,13 +160,11 @@
                             var markerOptions = {
                                 map: map,
                                 position: latLng,
-                                title: point["properties"]["ID$"]
+                                title: point["properties"]["ID$"] + ": " + point["properties"]["VALUE_STR"]
                             };
                             var marker = new google.maps.Marker(markerOptions);
-                            console.log(point);
                         }
                     }
-                    alert("取得が完了しました");
                 });
             })
             .catch(error => console.log("Error:", error));
