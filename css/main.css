@@ -14,6 +14,10 @@ body {
     height: 100vh;
 }
 
+.add-container {
+    overflow-y: scroll;
+}
+
 main {
     margin: 0px 16px 0px 16px;
 }
