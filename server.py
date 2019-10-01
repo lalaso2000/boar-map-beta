@@ -1,8 +1,14 @@
 from http.server import HTTPServer, SimpleHTTPRequestHandler
 import ssl
 
+# httpsサーバーをローカルで立ち上げるスクリプト
+
+# how to use
+# 1. 下のコマンドを実施する
 # openssl req -x509 -newkey rsa:4096 -sha256 \\n-nodes -keyout server.key -out server.crt \\n-subj "/CN=example.com" -days 3650
-# 上のコマンドを実施する
+# 2. server.keyとserver.crtが出来上がる
+# 3. python server.pyを実行
+# 4. https://localhost:8000 が立ち上がる
 
 
 def run(host, port, ctx, handler):
