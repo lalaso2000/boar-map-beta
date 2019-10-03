@@ -109,14 +109,14 @@ function initMap(isMainMap, center) {
     };
     map = new google.maps.Map(document.getElementById('map'), options);
 
-    // 現在地ボタンを追加
     if (isMainMap) {
+        // 現在地ボタンを追加
         var getLocBtnDiv = document.createElement('div');
         var getLocBtn = new GetLocBtn(getLocBtnDiv);
-
         getLocBtnDiv.index = 1;
         map.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push(getLocBtnDiv);
 
+        // 地図を触ったときの処理を追加
         google.maps.event.addListener(map, 'click', onMapClick);
     }
 
