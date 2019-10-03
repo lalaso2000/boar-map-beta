@@ -1,34 +1,35 @@
 <!DOCTYPE html>
 <html lang="ja">
-    <head>
-        <!-- Required meta tags -->
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-        <!-- CSS -->
-        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
-            integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
-        <link rel="stylesheet" href="./css/main.css">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-        <!-- アイコン -->
-        <script src="https://kit.fontawesome.com/767a5d66ca.js" crossorigin="anonymous"></script>
+    <!-- CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+        integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <link rel="stylesheet" href="./css/main.css">
 
-        <!-- Google Maps -->
-        <script src="https://maps.google.com/maps/api/js?key=AIzaSyDc-XqIl8L2uVHPVuckvnGUkqTeZ_Re9oU&language=ja"></script>
-        <script src="https://cdn.klokantech.com/maptilerlayer/v1/index.js"></script>
+    <!-- アイコン -->
+    <script src="https://kit.fontawesome.com/767a5d66ca.js" crossorigin="anonymous"></script>
 
-        <!-- Bootstrapのjs -->
-        <script src="https://code.jquery.com/jquery-3.4.1.min.js"
+    <!-- Google Maps -->
+    <script src="https://maps.google.com/maps/api/js?key=AIzaSyDc-XqIl8L2uVHPVuckvnGUkqTeZ_Re9oU&language=ja"></script>
+    <script src="https://cdn.klokantech.com/maptilerlayer/v1/index.js"></script>
+
+    <!-- Bootstrapのjs -->
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"
         integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
-            integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
-            crossorigin="anonymous"></script>
-        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"
-            integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
-            crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
+        integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"
+        integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
+        crossorigin="anonymous"></script>
 
-        <title>いのししマップぎふ</title>
-    </head>
+    <title>いのししマップぎふ</title>
+</head>
 
 
 <body>
@@ -64,7 +65,7 @@
     </div>
 
     <script>
-        
+
         // ナビバーや説明の部分の高さとウィンドウの高さを取得してマップの高さを決める
         function set_map_h() {
             const nav_h = $(".navbar").outerHeight(true);
@@ -74,7 +75,7 @@
         }
 
         function nav_toggle() {
-            setTimeout(function(){
+            setTimeout(function () {
                 set_map_h();
             }, 350);
         }
@@ -112,80 +113,6 @@
         });
 
         var map = initMap(true, null);
-    </script>
-
-    <script>
-        var receiptNumber = Math.floor(Math.random() * 100000);
-        var infoWins = [];
-        var markers = [];
-        var data = {
-            "commonHeader": {
-                "receiptNumber": receiptNumber
-            },
-            "layerId": 10000097,
-            "inclusion": 1,
-            "buffer": 100,
-            "srid": 4326,
-            "type": "Feature",
-            "geometry": {
-                "type": "Polygon",
-                "coordinates": [
-                    [ 
-                        [136.257826, 35.557228],
-                        [137.144564, 35.716552],
-                        [137.117792, 35.190084],
-                        [136.360881, 35.072085],
-                        [136.257826, 35.557228]
-                    ]
-                ]
-            }
-        };
-        function markerEvent(i) {
-            markers[i].addListener('mouseover', function() { // マーカーをクリックしたとき
-                infoWins[i].open(map, markers[i]); // 吹き出しの表示
-            });
-
-            markers[i].addListener('mouseout', function() {
-                infoWins[i].close();
-            })
-        }
-
-        fetch('https://pascali.info-mapping.com/webservices/publicservice/JsonService.asmx/GetFeaturesByExtent',
-            {
-                method: "POST",
-                headers: {
-                    "Accept": "application/json",
-                    "Content-Type": "application/json",
-                    "X-Map-Api-Access-Token": token
-                },
-                body: JSON.stringify(data)
-            })
-            .then(function (res) {
-                var json = res.json().then(data => {
-                    if(data["data"]["features"] != null) {
-                        for(var i = 0; i < data["data"]["features"].length; i++) {
-                            const point = data["data"]["features"][i];
-
-                            var latLng = new google.maps.LatLng(point["geometry"]["coordinates"][1], point["geometry"]["coordinates"][0]);
-
-                            var markerOptions = {
-                                map: map,
-                                position: latLng,
-                                title: point["properties"]["ID$"] + ": " + point["properties"]["VALUE_STR"]
-                            };
-                            var marker = new google.maps.Marker(markerOptions);
-
-                            markers[i] = marker;
-
-                            infoWins[i] = new google.maps.InfoWindow({ // 吹き出しの追加
-                                            content: (point["properties"]["VALUE_STR"] != "") ? point["properties"]["VALUE_STR"] : "(詳細情報なし)"
-                                        });
-                            markerEvent(i);
-                        }
-                    }
-                });
-            })
-            .catch(error => console.log("Error:", error));
     </script>
 </body>
 

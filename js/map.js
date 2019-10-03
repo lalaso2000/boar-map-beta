@@ -1,16 +1,16 @@
 var map;
 var loc_pin;
 
-var getUrlVars = function(){
-    var vars = {}; 
+var getUrlVars = function () {
+    var vars = {};
     var param = location.search.substring(1).split('&');
-    for(var i = 0; i < param.length; i++) {
+    for (var i = 0; i < param.length; i++) {
         var keySearch = param[i].search(/=/);
         var key = '';
-        if(keySearch != -1) key = param[i].slice(0, keySearch);
+        if (keySearch != -1) key = param[i].slice(0, keySearch);
         var val = param[i].slice(param[i].indexOf('=', 0) + 1);
-        if(key != '') vars[key] = decodeURI(val);
-    } 
+        if (key != '') vars[key] = decodeURI(val);
+    }
     return vars;
 }
 
@@ -50,7 +50,7 @@ function getLocation() {
         window.navigator.geolocation.getCurrentPosition(
             function (result) {
                 console.log("get loc success!");
-                if(loc_pin != null) {
+                if (loc_pin != null) {
                     // 既存のピンを削除
                     loc_pin.setMap(null);
                 }
@@ -110,20 +110,25 @@ function initMap(isMainMap, center) {
     map = new google.maps.Map(document.getElementById('map'), options);
 
     // 現在地ボタンを追加
-    if(isMainMap) {
+    if (isMainMap) {
         var getLocBtnDiv = document.createElement('div');
         var getLocBtn = new GetLocBtn(getLocBtnDiv);
-    
+
         getLocBtnDiv.index = 1;
         map.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push(getLocBtnDiv);
-    
+
         google.maps.event.addListener(map, 'click', onMapClick);
     }
 
-    if(center != null) {
+    if (center != null) {
         map.setZoom(18);
         map.setCenter(center);
     }
+
+    // 読み込み完了時にフィーチャ取得
+    map.addListener("idle", function () {
+        searchFeatures(map);
+    });
 
     return map;
 }
@@ -132,4 +137,97 @@ function initMap(isMainMap, center) {
 function onMapClick(event) {
     const latLng = event.latLng.toString().replace("(", "").replace(")", "").split(", ");
     window.location.href = "./add.html?latitude=" + latLng[0] + "&longitude=" + latLng[1];
+}
+
+// 表示されている領域のフィーチャを検索する
+function searchFeatures(map) {
+    // 表示領域を取得する
+    var bounds = map.getBounds();
+    console.log(bounds);
+    var topLat = bounds.oa.g;
+    var rightLng = bounds.ka.h;
+    var bottomLat = bounds.oa.h;
+    var leftLng = bounds.ka.g;
+    console.log("top: ", topLat);
+    console.log("right: ", rightLng);
+    console.log("left: ", leftLng);
+    console.log("bottom: ", bottomLat);
+
+    var receiptNumber = Math.floor(Math.random() * 100000);
+    var infoWins = [];
+    var markers = [];
+    var data = {
+        "commonHeader": {
+            "receiptNumber": receiptNumber
+        },
+        "layerId": 10000097,
+        "inclusion": 1,
+        "buffer": 100,
+        "srid": 4326,
+        "type": "Feature",
+        "geometry": {
+            "type": "Polygon",
+            "coordinates": [
+                [
+                    [leftLng, topLat],
+                    [rightLng, topLat],
+                    [rightLng, bottomLat],
+                    [leftLng, bottomLat],
+                    [leftLng, topLat]
+                ]
+            ]
+        }
+    };
+
+    function markerEvent(i) {
+        markers[i].addListener('mouseover', function () { // マーカーをクリックしたとき
+            infoWins[i].open(map, markers[i]); // 吹き出しの表示
+        });
+
+        markers[i].addListener('mouseout', function () {
+            infoWins[i].close();
+        })
+    }
+
+    fetch('https://pascali.info-mapping.com/webservices/publicservice/JsonService.asmx/GetFeaturesByExtent',
+        {
+            method: "POST",
+            headers: {
+                "Accept": "application/json",
+                "Content-Type": "application/json",
+                "X-Map-Api-Access-Token": token
+            },
+            body: JSON.stringify(data)
+        })
+        .then(function (res) {
+            var json = res.json().then(data => {
+                if (data["commonHeader"]["resultInfomation"] == 1) {
+                    console.log(data["commonHeader"]["systemErrorReport"]);
+                    return;
+                }
+                if (data["data"]["features"] != null) {
+                    console.log("feature num", data["data"]["features"].length);
+                    for (var i = 0; i < data["data"]["features"].length; i++) {
+                        const point = data["data"]["features"][i];
+
+                        var latLng = new google.maps.LatLng(point["geometry"]["coordinates"][1], point["geometry"]["coordinates"][0]);
+
+                        var markerOptions = {
+                            map: map,
+                            position: latLng,
+                            title: point["properties"]["ID$"] + ": " + point["properties"]["VALUE_STR"]
+                        };
+                        var marker = new google.maps.Marker(markerOptions);
+
+                        markers[i] = marker;
+
+                        infoWins[i] = new google.maps.InfoWindow({ // 吹き出しの追加
+                            content: (point["properties"]["VALUE_STR"] != "") ? point["properties"]["VALUE_STR"] : "(詳細情報なし)"
+                        });
+                        markerEvent(i);
+                    }
+                }
+            });
+        })
+        .catch(error => console.log("Error:", error));
 }
